@@ -1,5 +1,5 @@
 /**
- * Course Monitoring Bot for Thinkific Platform (changes some constants I did it for Skyyart)
+ * Course Monitoring Bot for Thinkific Platform
  * Automated detection and notification system for new course content
  * @author zxtNX
  * @version 0.1.0
