@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
+puppeteer.use(StealthPlugin()); 
 const cheerio = require('cheerio');
 const cron = require('node-cron');
 const fs = require('fs').promises;
@@ -72,7 +72,7 @@ const EMBED_COLORS = {
  * @throws {Error} If required variables are missing
  */
 function validateEnvironment() {
-  const required = ['DISCORD_WEBHOOK', 'THINKIFIC_EMAIL', 'THINKIFIC_PASSWORD'];
+  const required = ['DISCORD_WEBHOOK', 'THINKIFIC_EMAIL', 'THINKIFIC_PASSWORD', 'COURSE_LOGIN_URL', 'COURSE_CONTENTS_URL', 'COURSE_BASE_URL', 'DEFAULT_THUMBNAIL'];
   const missing = required.filter(key => !process.env[key]);
   
   if (missing.length > 0) {
