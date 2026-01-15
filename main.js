@@ -21,12 +21,12 @@ const CONFIG = {
   WEBHOOK_URL: process.env.DISCORD_WEBHOOK,
   THINKIFIC_EMAIL: process.env.THINKIFIC_EMAIL,
   THINKIFIC_PASSWORD: process.env.THINKIFIC_PASSWORD,
-  LOGIN_URL: 'https://skyyart.thinkific.com/users/sign_in',
-  COURSE_URL: 'https://skyyart.thinkific.com/courses/take/new-course/',
-  BASE_URL: 'https://skyyart.thinkific.com',
+  LOGIN_URL: process.env.COURSE_LOGIN_URL,
+  COURSE_URL: process.env.COURSE_CONTENTS_URL,
+  COURSE_BASE_URL: process.env.BASE_URL,
+  DEFAULT_THUMBNAIL: process.env.DEFAULT_THUMBNAIL,
   DATABASE_FILE: 'database.json',
   COOKIES_FILE: 'cookies.json',
-  DEFAULT_THUMBNAIL: 'https://mir-s3-cdn-cf.behance.net/projects/404/210dae164379225.Y3JvcCw4MDgsNjMyLDAsMA.jpg',
   CRON_SCHEDULE: '0 * * * *', // Every hour
 };
 
@@ -340,7 +340,7 @@ class ContentScraper {
       
       const details = $el.find(SELECTORS.CONTENT_DETAILS).text();
       const type = this.identifyContentType(details, href);
-      const url = CONFIG.BASE_URL + href;
+      const url = CONFIG.COURSE_BASE_URL + href;
 
       items.push({ id, title, type, url });
     });
