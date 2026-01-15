@@ -1,0 +1,220 @@
+# Course Monitoring Bot
+
+Automated monitoring and notification system for Thinkific course content updates.
+
+## Features
+
+- 🔐 **Automatic Authentication** - Smart session management with cookie persistence
+- 🔍 **Content Detection** - Monitors for new lessons, videos, quizzes, and reading materials
+- 🔔 **Discord Notifications** - Real-time alerts via Discord webhooks
+- 🖼️ **Thumbnail Extraction** - Automatic thumbnail retrieval for video content
+- 📊 **Change Tracking** - Detects both new content and updates to existing content
+- ⚡ **Scheduled Checks** - Configurable cron-based monitoring
+
+## Installation
+
+```bash
+npm install puppeteer-extra puppeteer-extra-plugin-stealth cheerio node-cron dotenv
+```
+
+## Configuration
+
+Create a `.env` file in the project root:
+
+```env
+DISCORD_WEBHOOK=https://discord.com/api/webhooks/YOUR_WEBHOOK_URL
+THINKIFIC_EMAIL=your.email@example.com
+THINKIFIC_PASSWORD=your_password
+```
+
+## Usage
+
+```bash
+node main.js
+```
+
+The bot will:
+1. Run an immediate check on startup
+2. Schedule periodic checks (default: every minute)
+3. Send Discord notifications for any detected changes
+
+## Architecture
+
+### Core Components
+
+#### **AuthenticationManager**
+Handles login, session validation, and cookie management.
+
+```javascript
+// Ensures user is authenticated before scraping
+await AuthenticationManager.ensureAuthenticated(page);
+```
+
+#### **ContentScraper**
+Scrapes course content and extracts metadata.
+
+```javascript
+// Scrape all course items
+const items = await ContentScraper.scrapeContent(page);
+
+// Extract video thumbnail
+const thumbnail = await ContentScraper.extractThumbnail(page, videoUrl);
+```
+
+#### **ChangeDetector**
+Compares current content with stored database to identify changes.
+
+```javascript
+// Detect new or updated content
+const actions = ChangeDetector.detectChanges(currentItems, database);
+```
+
+#### **NotificationService**
+Sends formatted Discord webhook notifications.
+
+```javascript
+// Send notification
+await NotificationService.send(content, EVENT_TYPES.NEW);
+```
+
+#### **CourseMonitor**
+Orchestrates the entire monitoring workflow.
+
+```javascript
+const monitor = new CourseMonitor();
+monitor.start();
+```
+
+## Data Storage
+
+### `cookies.json`
+Stores session cookies for authentication persistence.
+
+```json
+[
+  {
+    "name": "_session_id",
+    "value": "abc123...",
+    "domain": ".thinkific.com"
+  }
+]
+```
+
+### `database.json`
+Tracks known content to detect changes.
+
+```json
+{
+  "12345": {
+    "title": "Introduction to Drawing",
+    "type": "🎥 Video"
+  }
+}
+```
+
+## Configuration Options
+
+### Timeouts
+```javascript
+const TIMEOUTS = {
+  NAVIGATION: 30000,        // Page navigation timeout
+  SELECTOR_WAIT: 20000,     // Wait for selector timeout
+  TYPING_DELAY: 30,         // Delay between keystrokes
+  NOTIFICATION_DELAY: 2000, // Delay between notifications
+  IMAGE_LOAD_DELAY: 2000,   // Wait for images to load
+};
+```
+
+### Cron Schedule
+Default: `'* * * * *'` (every minute)
+
+Modify `CONFIG.CRON_SCHEDULE` to change frequency:
+- `'*/5 * * * *'` - Every 5 minutes
+- `'0 * * * *'` - Every hour
+- `'0 */2 * * *'` - Every 2 hours
+
+## Event Types
+
+### NEW
+Triggered when completely new content is detected.
+- **Color**: Green (5763719)
+- **Title**: "🚨 New Content Available!"
+
+### UPDATE
+Triggered when existing content is modified (e.g., text → video).
+- **Color**: Yellow (16776960)
+- **Title**: "🔥 Content Updated!"
+
+## Content Types
+
+- 🎥 **Video** - Video lessons
+- 📄 **Reading** - Text-based content
+- ❓ **Quiz** - Interactive quizzes
+- **Other** - Unclassified content
+
+## Error Handling
+
+The bot includes comprehensive error handling:
+
+- **Environment Validation** - Checks required variables on startup
+- **Login Failures** - Logs authentication errors with context
+- **Session Expiration** - Automatically re-authenticates when needed
+- **Scraping Errors** - Graceful degradation if selectors fail
+- **Network Issues** - Timeout handling for all network operations
+
+## Logging
+
+Structured logging with timestamps and levels:
+
+```
+[2025-01-15T10:30:00.000Z] [INFO] - Starting check at 10:30:00
+[2025-01-15T10:30:05.000Z] [SUCCESS] - Notification sent (NEW): Introduction to Perspective
+[2025-01-15T10:30:07.000Z] [WARNING] - No thumbnail found
+```
+
+## Security Best Practices
+
+- ✅ Environment variables for sensitive data
+- ✅ No credentials logged or exposed
+- ✅ Stealth plugin to avoid detection
+- ✅ Graceful shutdown handlers
+- ✅ Cookie-based session persistence
+
+## Troubleshooting
+
+### Bot can't login
+- Verify credentials in `.env`
+- Check if CAPTCHA is present (manual intervention required)
+- Review console logs for specific error messages
+
+### No notifications received
+- Verify Discord webhook URL is correct
+- Check if `database.json` exists (first run initializes silently)
+- Ensure network connectivity
+
+### Sessions expire frequently
+- Cookies may have short TTL - this is normal
+- Bot automatically re-authenticates when needed
+
+## Future Improvements
+
+- [ ] Add retry mechanism for failed requests
+- [ ] Implement structured logging with Winston/Pino
+- [ ] Add unit tests
+- [ ] Support multiple courses
+- [ ] Add Telegram/Slack notification options
+- [ ] Implement database migrations for schema changes
+- [ ] Add health check endpoint
+- [ ] Docker containerization
+
+## License
+
+MIT
+
+## Contributing
+
+Pull requests welcome! Please ensure:
+- Code follows ESLint standards
+- All functions have JSDoc comments
+- Error handling is comprehensive
+- Changes are backwards compatible
