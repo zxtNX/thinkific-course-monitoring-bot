@@ -1,6 +1,7 @@
 # Course Monitoring Bot
 
 Automated monitoring and notification system for Thinkific course content updates.
+Used to send discord notification through a webhook.
 
 ## Features
 
@@ -19,7 +20,7 @@ npm install puppeteer-extra puppeteer-extra-plugin-stealth cheerio node-cron dot
 
 ## Configuration
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root or rename the `.env.local`:
 
 ```env
 DISCORD_WEBHOOK=https://discord.com/api/webhooks/YOUR_WEBHOOK_URL
@@ -35,8 +36,8 @@ node main.js
 
 The bot will:
 1. Run an immediate check on startup
-2. Schedule periodic checks (default: every minute)
-3. Send Discord notifications for any detected changes
+2. Schedule periodic checks (default: every hour)
+3. Send Discord notifications through your chosen webhook for any detected changes
 
 ## Architecture
 
@@ -126,31 +127,28 @@ const TIMEOUTS = {
 ```
 
 ### Cron Schedule
-Default: `'* * * * *'` (every minute)
+Default: `'0 * * * *'` (every hour)
 
 Modify `CONFIG.CRON_SCHEDULE` to change frequency:
 - `'*/5 * * * *'` - Every 5 minutes
 - `'0 * * * *'` - Every hour
 - `'0 */2 * * *'` - Every 2 hours
+- and so on... If you have no idea how cron syntax works => https://crontab.guru/
 
 ## Event Types
 
-### NEW
+### NEW EventType
 Triggered when completely new content is detected.
-- **Color**: Green (5763719)
-- **Title**: "🚨 New Content Available!"
 
-### UPDATE
-Triggered when existing content is modified (e.g., text → video).
-- **Color**: Yellow (16776960)
-- **Title**: "🔥 Content Updated!"
+### UPDATE EventType
+Triggered when existing content is modified (e.g., content type text become a video type).
 
 ## Content Types
 
-- 🎥 **Video** - Video lessons
-- 📄 **Reading** - Text-based content
+- 🎥 **Vidéo** - Video lessons
+- 📄 **Lecture** - Text-based content
 - ❓ **Quiz** - Interactive quizzes
-- **Other** - Unclassified content
+- **Autre** - Unclassified content
 
 ## Error Handling
 
@@ -174,8 +172,7 @@ Structured logging with timestamps and levels:
 
 ## Security Best Practices
 
-- ✅ Environment variables for sensitive data
-- ✅ No credentials logged or exposed
+- ✅ Environment variables for sensitive data (there are better options if you don't intend to share this and/or willing to not fully automate this kind of task, env variables are never safe to use, specially when they contains your creds)
 - ✅ Stealth plugin to avoid detection
 - ✅ Graceful shutdown handlers
 - ✅ Cookie-based session persistence
@@ -189,11 +186,10 @@ Structured logging with timestamps and levels:
 
 ### No notifications received
 - Verify Discord webhook URL is correct
-- Check if `database.json` exists (first run initializes silently)
 - Ensure network connectivity
 
 ### Sessions expire frequently
-- Cookies may have short TTL - this is normal
+- Cookies may have short TTL - this is alright
 - Bot automatically re-authenticates when needed
 
 ## Future Improvements
@@ -202,7 +198,7 @@ Structured logging with timestamps and levels:
 - [ ] Implement structured logging with Winston/Pino
 - [ ] Add unit tests
 - [ ] Support multiple courses
-- [ ] Add Telegram/Slack notification options
+- [ ] Add others apps support for notification options
 - [ ] Implement database migrations for schema changes
 - [ ] Add health check endpoint
 - [ ] Docker containerization
