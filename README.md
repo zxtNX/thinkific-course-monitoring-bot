@@ -26,6 +26,10 @@ Create a `.env` file in the project root or rename the `.env.local`:
 DISCORD_WEBHOOK=https://discord.com/api/webhooks/YOUR_WEBHOOK_URL
 THINKIFIC_EMAIL=your.email@example.com
 THINKIFIC_PASSWORD=your_password
+COURSE_LOGIN_URL=https://MY_COURSE_AUTHOR.thinkific.com/users/sign_in
+COURSE_CONTENTS_URL=https://MY_COURSE_AUTHOR.thinkific.com/courses/take/new-course/
+COURSE_BASE_URL=https://MY_COURSE_AUTHOR.thinkific.com
+DEFAULT_THUMBNAIL=https://HERE_IS_MY_DEFAULT_THUMBNAIL.jpg
 ```
 
 ## Usage
