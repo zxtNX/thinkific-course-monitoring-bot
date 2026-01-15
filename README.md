@@ -1,4 +1,4 @@
-# Course Monitoring Bot
+# Thinkific Course Monitoring Bot
 
 Automated monitoring and notification system for Thinkific course content updates.
 Used to send discord notification through a webhook.
