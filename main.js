@@ -23,7 +23,7 @@ const CONFIG = {
   THINKIFIC_PASSWORD: process.env.THINKIFIC_PASSWORD,
   LOGIN_URL: process.env.COURSE_LOGIN_URL,
   COURSE_URL: process.env.COURSE_CONTENTS_URL,
-  COURSE_BASE_URL: process.env.BASE_URL,
+  COURSE_BASE_URL: process.env.COURSE_BASE_URL,
   DEFAULT_THUMBNAIL: process.env.DEFAULT_THUMBNAIL,
   DATABASE_FILE: 'database.json',
   COOKIES_FILE: 'cookies.json',
